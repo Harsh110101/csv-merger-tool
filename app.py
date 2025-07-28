@@ -150,8 +150,6 @@ for file_name, file_content in uploaded.items():
     # Append parsed data to the all_data DataFrame
     all_data = pd.concat([all_data, parsed[UNIFIED_COLUMNS]], ignore_index=True)
 
-print("✅ All files processed and merged!")
-display(all_data.head())
     
     st.success(f"✅ Merged {len(all_data)} unique leads!")
     st.dataframe(all_data.head(50))
