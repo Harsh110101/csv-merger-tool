@@ -157,11 +157,10 @@ print("✅ All files processed and merged!")
 display(all_data.head())
 ---------------
 
-# Save and offer download
-from google.colab import files
+       all_data = pd.concat([all_data, parsed], ignore_index=True)
 
-final_filename = "merged_leads.csv"
-all_data.to_csv(final_filename, index=False)
+    st.success(f"✅ Merged {len(all_data)} unique leads!")
+    st.dataframe(all_data.head(50))
 
-files.download(final_filename)
-
+    csv = all_data.to_csv(index=False).encode("utf-8")
+    st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
