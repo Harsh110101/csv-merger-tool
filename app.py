@@ -120,7 +120,7 @@ def parse_seamless(df):
         "Source": "Seamless"
     })
 
------------------------------
+
 parsed = None  # default
 all_data = pd.DataFrame(columns=UNIFIED_COLUMNS) # Initialize an empty DataFrame
 
@@ -155,7 +155,7 @@ for file_name, file_content in uploaded.items():
 
 print("✅ All files processed and merged!")
 display(all_data.head())
----------------
+
 
        all_data = pd.concat([all_data, parsed], ignore_index=True)
 
