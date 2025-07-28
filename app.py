@@ -147,7 +147,7 @@ if uploaded_files:
 
         all_data = pd.concat([all_data, parsed], ignore_index=True)
 
-        all_data.drop_duplicates(subset=["Full Name", "Company Name"], inplace=True)
+       # all_data.drop_duplicates(subset=["Full Name", "Company Name"], inplace=True)
 
 
     st.success(f"✅ Merged {len(all_data)} unique leads!")
