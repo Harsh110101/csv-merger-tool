@@ -157,7 +157,7 @@ print("✅ All files processed and merged!")
 display(all_data.head())
 
 
-       all_data = pd.concat([all_data, parsed], ignore_index=True)
+    all_data = pd.concat([all_data, parsed], ignore_index=True)
 
     st.success(f"✅ Merged {len(all_data)} unique leads!")
     st.dataframe(all_data.head(50))
