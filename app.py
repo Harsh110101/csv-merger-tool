@@ -118,39 +118,37 @@ def parse_seamless(df):
         "Source": "Seamless"
     })
 
-parsed = None  # default
-all_data = pd.DataFrame(columns=UNIFIED_COLUMNS) # Initialize an empty DataFrame
+# Upload
+uploaded_files = st.file_uploader("📂 Upload CSV files", type="csv", accept_multiple_files=True)
 
-for file_name, file_content in uploaded.items():
-    df = pd.read_csv(io.StringIO(file_content.decode('utf-8')))
-    parsed = None  # Reset parsed for each file
+if uploaded_files:
+    all_data = pd.DataFrame(columns=UNIFIED_COLUMNS)
 
-    # ZoomInfo detection
-    if {"ZoomInfo Contact ID", "LinkedIn Contact Profile URL", "Direct Phone Number"}.intersection(df.columns):
-        parsed = parse_zoominfo(df)
+    for file in uploaded_files:
+        filename = file.name
+        df = pd.read_csv(file)
+        parsed = None
 
-    # Apollo detection
-    elif {"Person Linkedin Url", "Work Direct Phone", "Departments"}.intersection(df.columns):
-        parsed = parse_apollo(df)
+        # Universal source detection
+        if {"ZoomInfo Contact ID", "LinkedIn Contact Profile URL", "Direct Phone Number"}.intersection(df.columns):
+            parsed = parse_zoominfo(df)
+        elif {"Person Linkedin Url", "Work Direct Phone", "Departments"}.intersection(df.columns):
+            parsed = parse_apollo(df)
+        elif {"Email 1", "Company Name - Cleaned", "Contact LI Profile URL"}.intersection(df.columns):
+            parsed = parse_seamless(df)
+        elif {"Executive First Name", "Primary SIC", "Location Sales Volume"}.intersection(df.columns):
+            parsed = parse_salesgenie(df)
 
-    # Seamless.ai detection
-    elif {"Email 1", "Company Name - Cleaned", "Contact LI Profile URL"}.intersection(df.columns):
-        parsed = parse_seamless(df)
+        if parsed is None:
+            st.warning(f"❌ Unknown format: {filename}")
+            with st.expander(f"📂 Columns in {filename}"):
+                st.write(df.columns.tolist())
+            continue
 
-    # Salesgenie detection
-    elif {"Executive First Name", "Primary SIC", "Location Sales Volume"}.intersection(df.columns):
-        parsed = parse_salesgenie(df)
+        all_data = pd.concat([all_data, parsed], ignore_index=True)
 
-    # Unknown fallback
-    if parsed is None:
-        print(f"❌ Unknown format: {file_name}")
-        print(f"📂 Columns in {file_name}: {df.columns.tolist()}")
-        continue
+    all_data.drop_duplicates(subset=["Email", "LinkedIn URL"], inplace=True)
 
-    # Append parsed data to the all_data DataFrame
-    all_data = pd.concat([all_data, parsed[UNIFIED_COLUMNS]], ignore_index=True)
-
-    
     st.success(f"✅ Merged {len(all_data)} unique leads!")
     st.dataframe(all_data.head(50))
 
