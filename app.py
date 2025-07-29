@@ -1,3 +1,4 @@
+from readline import redisplay
 import streamlit as st
 import pandas as pd
 import io
@@ -13,6 +14,11 @@ UNIFIED_COLUMNS = [
     "NAICS Code", "SIC Code", "Total number of locations", "Source"
 ]
 
+# Upload CSV files
+uploaded_files = st.file_uploader("📂 Drop your CSV files here", type="csv", accept_multiple_files=True)
+
+
+# Define all your parser functions here
 def parse_zoominfo(df):
     return pd.DataFrame({
         "First Name": df.get("First Name"),
@@ -137,39 +143,49 @@ def parse_seamless(df):
         "Source": "Seamless"
     })
 
-# Upload
-uploaded_files = st.file_uploader("📂 Upload CSV files", type="csv", accept_multiple_files=True)
+#Merging starts
+all_data = pd.DataFrame(columns=UNIFIED_COLUMNS) # Initialize an empty DataFrame
 
-if uploaded_files:
-    all_data = pd.DataFrame(columns=UNIFIED_COLUMNS)
+for uploaded_files in uploaded_files:
+    file_name = uploaded_files.name
+    file_content = uploaded_files.read()
+    df = pd.read_csv(io.StringIO(file_content.decode('utf-8')))
+   
+    parsed = None  # Reset parsed for each file
 
-    for file in uploaded_files:
-        filename = file.name
-        df = pd.read_csv(file)
-        parsed = None
+    # ZoomInfo detection
+    if {"ZoomInfo Contact ID", "LinkedIn Contact Profile URL", "Direct Phone Number"}.intersection(df.columns):
+        parsed = parse_zoominfo(df)
 
-        # Universal source detection
-        if {"ZoomInfo Contact ID", "LinkedIn Contact Profile URL", "Direct Phone Number"}.intersection(df.columns):
-            parsed = parse_zoominfo(df)
-        elif {"Person Linkedin Url", "Work Direct Phone", "Departments"}.intersection(df.columns):
-            parsed = parse_apollo(df)
-        elif {"Email 1", "Company Name - Cleaned", "Contact LI Profile URL"}.intersection(df.columns):
-            parsed = parse_seamless(df)
-        elif {"Executive First Name", "Primary SIC", "Location Sales Volume"}.intersection(df.columns):
-            parsed = parse_salesgenie(df)
+    # Apollo detection
+    elif {"Person Linkedin Url", "Work Direct Phone", "Departments"}.intersection(df.columns):
+        parsed = parse_apollo(df)
 
-        if parsed is None:
-            st.warning(f"❌ Unknown format: {filename}")
-            with st.expander(f"📂 Columns in {filename}"):
-                st.write(df.columns.tolist())
-            continue
+    # Seamless.ai detection
+    elif {"Email 1", "Company Name - Cleaned", "Contact LI Profile URL"}.intersection(df.columns):
+        parsed = parse_seamless(df)
 
-        all_data = pd.concat([all_data, parsed], ignore_index=True)
+    # Salesgenie detection
+    elif {"Executive First Name", "Primary SIC", "Location Sales Volume"}.intersection(df.columns):
+        parsed = parse_salesgenie(df)
 
-       # all_data.drop_duplicates(subset=["Full Name", "Company Name"], inplace=True)
-    #Removing Duplicates by ranking the designation
+    # Unknown fallback
+    if parsed is None:
+        print(f"❌ Unknown format: {file_name}")
+        print(f"📂 Columns in {file_name}: {df.columns.tolist()}")
+        continue
 
-    # Step 1: Create a seniority ranking map
+    # Append parsed data to the all_data DataFrame
+    all_data = pd.concat([all_data, parsed[UNIFIED_COLUMNS]], ignore_index=True)
+
+#print("✅ All files processed and merged!")
+#display(all_data.head())
+
+#all_data = pd.concat([all_data, parsed], ignore_index=True)
+
+#Removing the duplicates
+
+# Step 1: Create a seniority ranking map
 seniority_map = {
     "ceo": 1, "chief executive officer": 1, "cto": 1, "chief technology officer": 1, "owner": 1,
     "coo": 1, "chief operating officer": 1, "cio": 1, "chief information officer": 1, "cheif financial officer": 1, "founder": 1,
@@ -208,6 +224,9 @@ all_data = all_data.drop_duplicates(subset=["Company Name"], keep="first")
 
 # Optional: Drop the helper column if you don’t want to export it
 all_data.drop(columns=["Seniority Rank"], inplace=True)
+
+# Step 6: Show result
+st.success(f"✅ Unique companies retained with highest-ranked titles: {len(all_data)}")
 
 
 st.success(f"✅ Merged {len(all_data)} unique leads!")
