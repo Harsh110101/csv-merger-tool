@@ -209,11 +209,9 @@ all_data = all_data.drop_duplicates(subset=["Company Name"], keep="first")
 # Optional: Drop the helper column if you don’t want to export it
 all_data.drop(columns=["Seniority Rank"], inplace=True)
 
-  
 
+st.success(f"✅ Merged {len(all_data)} unique leads!")
+st.dataframe(all_data.head(50))
 
-    st.success(f"✅ Merged {len(all_data)} unique leads!")
-    st.dataframe(all_data.head(50))
-
-    csv = all_data.to_csv(index=False).encode("utf-8")
-    st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+csv = all_data.to_csv(index=False).encode("utf-8")
+st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
