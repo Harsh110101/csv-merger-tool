@@ -225,6 +225,41 @@ all_data = all_data.drop_duplicates(subset=["Company Name"], keep="first")
 # Optional: Drop the helper column if you don’t want to export it
 all_data.drop(columns=["Seniority Rank"], inplace=True)
 
+# Rename columns for final export (e.g., "First Name" → "First Name (Clay)")
+column_renames = {
+    "First Name": "First Name (Clay)",
+    "Last Name": "Last Name (Clay)",
+    "Full Name": "Full Name (Clay)",
+    "Title": "Title (Clay)",
+    "Seniority": "Seniority (Clay)",
+    "Department": "Department (Clay)",
+    "Email": "Email (Clay)",
+    "Mobile Phone": "Mobile Phone (Clay)",
+    "Work Phone": "Work Phone (Clay)",
+    "Person LinkedIn URL": "Person LinkedIn URL (Clay)",
+    "Company Name": "Company Name (Clay)",
+    "Website": "Website (Clay)",
+    "Founding Year": "Founding Year (Clay)",
+    "Facebook URL": "Facebook URL (Clay)",
+    "LinkedIn URL": "LinkedIn URL (Clay)",
+    "Twitter URL": "Twitter URL (Clay)",
+    "Company Address": "Company Address (Clay)",
+    "City": "City (Clay)",
+    "State": "State (Clay)",
+    "Country": "Country (Clay)",
+    "Company Revenue": "Company Revenue (Clay)",
+    "Employees": "Employees (Clay)",
+    "Industry": "Industry (Clay)",
+    "NAICS Code": "NAICS Code (Clay)",
+    "SIC Code": "SIC Code (Clay)",
+    "Total number of locations": "Total Locations (Clay)",
+    "Source": "Source (Clay)"
+}
+
+# Apply renaming
+all_data.rename(columns=column_renames, inplace=True)
+
+
 # Step 6: Show result
 st.success(f"✅ Unique companies retained with highest-ranked titles: {len(all_data)}")
 
