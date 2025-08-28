@@ -50,6 +50,39 @@ def parse_zoominfo(df):
         "Source": "ZoomInfo"
     })
 
+def parse_salesgenie_us(df):
+    return pd.DataFrame({
+        "First Name": df.get("Executive First Name"),
+        "Last Name": df.get("Executive Last Name"),
+        "Full Name": df.get("Executive First Name") + " " + df.get("Executive Last Name"),
+        "Title": df.get("Executive Title"),
+        "Seniority": "",  # Not explicitly provided
+        "Department": "",  # Not available
+        "Email": "",  # No email field in US export
+        "Mobile Phone": "",  # Not present in schema
+        "Work Phone": df.get("Phone Number Combined"),
+        "Person LinkedIn URL": "",  # Not present
+        "Company Name": df.get("Company Name"),
+        "Website": df.get("Company Website"),
+        "Founding Year": df.get("Year Established"),
+        "Facebook URL": "",
+        "LinkedIn URL": "",
+        "Twitter URL": "",
+        "Company Address": df.get("Location Address"),
+        "City": df.get("Location City"),
+        "State": df.get("Location State"),
+        "Country": "USA",
+        "Company Revenue": df.get("Location Sales Volume Actual").apply(
+            lambda x: int(str(x).replace("$", "").replace(",", "").strip()) if pd.notna(x) and str(x).strip() != "" else ""
+        ),
+        "Employees": df.get("Location Employee Size Actual"),
+        "Industry": df.get("Primary NAICS Description"),
+        "NAICS Code": df.get("Primary NAICS Code"),
+        "SIC Code": df.get("Primary SIC Code"),
+        "Total number of locations": df.get("Affiliated Locations"),
+        "Source": "Salesgenie US"
+    })
+
 def parse_apollo(df):
     return pd.DataFrame({
         "First Name": df.get("First Name"),
@@ -169,6 +202,10 @@ for uploaded_files in uploaded_files:
     elif {"Executive First Name", "Primary SIC", "Location Sales Volume"}.intersection(df.columns):
         parsed = parse_salesgenie(df)
 
+    # Salesgenie US detection
+    elif {"Executive First Name", "Phone Number Combined", "Primary NAICS Code"}.intersection(df.columns):
+        parsed = parse_salesgenie_us(df)
+
     # Unknown fallback
     if parsed is None:
         print(f"❌ Unknown format: {file_name}")
@@ -269,3 +306,4 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
