@@ -128,7 +128,7 @@ def parse_salesgenie(df):
         "Person LinkedIn URL": "",
         "Company Name": df.get("Company Name"),
         "Website": df.get("Website"),
-        "Founding Year": "",
+        "Founding Year": df.get("Primary SIC Year Appeared"),
         "Facebook URL": "",
         "LinkedIn URL": "",
         "Twitter URL": "",
@@ -306,4 +306,5 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
