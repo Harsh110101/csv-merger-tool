@@ -102,9 +102,9 @@ def parse_apollo(df):
         "LinkedIn URL": df.get("Company Linkedin Url"),
         "Twitter URL": df.get("Twitter Url"),
         "Company Address": df.get("Company Address"),
-        "City": df.get("City"),
-        "State": df.get("State"),
-        "Country": df.get("Country"),
+        "City": df.get("Company City"),
+        "State": df.get("Company State"),
+        "Country": df.get("Company Country"),
         "Company Revenue": df.get("Annual Revenue"),
         "Employees": df.get("# Employees"),
         "Industry": df.get("Industry"),
@@ -306,6 +306,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
