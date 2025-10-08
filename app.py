@@ -95,7 +95,7 @@ def parse_apollo(df):
         "Mobile Phone": df.get("Mobile Phone"),
         "Work Phone": df.get("Work Direct Phone"),
         "Person LinkedIn URL": df.get("Person Linkedin Url"),
-        "Company Name": df.get("Company"),
+        "Company Name": df.get("Company Name"),
         "Website": df.get("Website"),
         "Founding Year": "",
         "Facebook URL": df.get("Facebook Url"),
@@ -306,6 +306,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
