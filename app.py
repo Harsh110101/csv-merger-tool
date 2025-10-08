@@ -164,9 +164,9 @@ def parse_seamless(df):
         "LinkedIn URL": df.get("Company LI Profile Url"),
         "Twitter URL": "",
         "Company Address": df.get("Company Location"),
-        "City": df.get("Contact City"),
-        "State": df.get("Contact State"),
-        "Country": df.get("Contact Country"),
+        "City": df.get("Company City"),
+        "State": df.get("Company State"),
+        "Country": df.get("Company Country"),
         "Company Revenue": df.get("Company Annual Revenue"),
         "Employees": df.get("Company Staff Count"),
         "Industry": df.get("Company Industry"),
@@ -306,5 +306,6 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
