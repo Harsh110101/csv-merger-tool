@@ -126,7 +126,7 @@ def parse_salesgenie(df):
         "Work Phone": df.get("Phone Number"),
         "Person LinkedIn URL": "",
         "Company Name": df.get("Company Name"),
-        "Website": df.get("Website").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True) or df.get("Company Website").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
+        "Website": df.get("Website") or df.get("Company Website").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
         "Founding Year": df["Primary SIC Year Appeared"] if "Primary SIC Year Appeared" in df.columns else df.get("Year Established"),
         "Facebook URL": "",
         "LinkedIn URL": "",
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
