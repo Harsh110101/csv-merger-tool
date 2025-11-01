@@ -126,21 +126,21 @@ def parse_salesgenie(df):
         "Work Phone": df.get("Phone Number"),
         "Person LinkedIn URL": "",
         "Company Name": df.get("Company Name"),
-        "Website": df.get("Website"),
+        "Website": df.get("Website") or df.get("Company Website"),
         "Founding Year": df.get("Primary SIC Year Appeared"),
         "Facebook URL": "",
         "LinkedIn URL": "",
         "Twitter URL": "",
-        "Company Address": df.get("Address"),
+        "Company Address": df.get("Address") or df.get("Location Address"),
         "City": df.get("City") or df.get("Location City"),
         "State": df.get("Province") or df.get("Location State"),
         "Country": "Canada",
         "Company Revenue": df.get("Location Sales Volume") or df.get("Location Sales Volume Actual").apply(lambda x: int(str(x).replace("$", "").replace(",", "").strip()) if pd.notna(x) and str(x).strip() != '' else ""),
         "Employees": df.get("Location Number of Employees") or df.get("Location Number of Employees Actual"),
         "Industry": df.get("Primary NAICS Description"),
-        "NAICS Code": df.get("Primary NAICS"),
-        "SIC Code": df.get("Primary SIC"),
-        "Total number of locations": "",
+        "NAICS Code": df.get("Primary NAICS") or df.get("Primary NAICS Code"),
+        "SIC Code": df.get("Primary SIC") or df.get("Primary SIC Code"),
+        "Total number of locations": "" or df.get("Affiliated Locations"),
         "Source": "Salesgenie"
     })
 
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
