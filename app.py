@@ -22,7 +22,7 @@ def parse_zoominfo(df):
     return pd.DataFrame({
         "First Name": df.get("First Name") or "",
         "Last Name": df.get("Last Name") or "",
-        "Full Name": df.get("First Name") + " " + df.get("Last Name"),
+        "Full Name": ((df.get("First Name", pd.Series("", index=df.index)).fillna('') + " " + df.get("Last Name", pd.Series("", index=df.index)).fillna('')).str.strip()),
         "Title": df.get("Job Title") or "",
         "Seniority": df.get("Management Level") or "",
         "Department": df.get("Department") or "",
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
