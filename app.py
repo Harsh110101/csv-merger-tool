@@ -33,9 +33,9 @@ def parse_zoominfo(df):
         "Company Name": df.get("Company Name"),
         "Website": df.get("Website"),
         "Founding Year": df.get("Founded Year"),
-        "Facebook URL": df.get("Facebook URL"),
-        "LinkedIn URL": df.get("LinkedIn URL"),
-        "Twitter URL": df.get("Twitter URL"),
+        "Facebook URL": df.get("Facebook URL") or df.get("Facebook Company Profile URL"),
+        "LinkedIn URL": df.get("LinkedIn URL") or df.get("LinkedIn Company Profile URL"),
+        "Twitter URL": df.get("Twitter URL") or df.get("Twitter Company Profile URL"),
         "Company Address": df.get("Company Street Address"),
         "City": df.get("Company City"),
         "State": df.get("Company State"),
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
