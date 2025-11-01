@@ -20,14 +20,14 @@ uploaded_files = st.file_uploader("📂 Drop your CSV files here", type="csv", a
 # Define all your parser functions here
 def parse_zoominfo(df):
     return pd.DataFrame({
-        "First Name": df.get("First Name"),
-        "Last Name": df.get("Last Name"),
+        "First Name": df.get("First Name") or "",
+        "Last Name": df.get("Last Name") or "",
         "Full Name": df.get("First Name") + " " + df.get("Last Name"),
-        "Title": df.get("Job Title"),
-        "Seniority": df.get("Management Level"),
-        "Department": df.get("Department"),
-        "Email": df.get("Email Address"),
-        "Mobile Phone": df.get("Mobile phone"),
+        "Title": df.get("Job Title") or "",
+        "Seniority": df.get("Management Level") or "",
+        "Department": df.get("Department") or "",
+        "Email": df.get("Email Address") or "",
+        "Mobile Phone": df.get("Mobile phone") or "",
         "Work Phone": df.get("Direct Phone Number"),
         "Person LinkedIn URL": df.get("LinkedIn Contact Profile URL"),
         "Company Name": df.get("Company Name"),
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
