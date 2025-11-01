@@ -133,11 +133,12 @@ def parse_salesgenie(df):
         "LinkedIn URL": "",
         "Twitter URL": "",
         "Company Address": df.get("Address"),
-        "City": df.get("City"),
-        "State": df.get("Province"),
+        "City": df.get("City") or df.get("Location City"),
+        "State": df.get("Province") or df.get("Location State"),
         "Country": "Canada",
-        "Company Revenue": df.get("Location Sales Volume").apply(lambda x: int(str(x).replace("$", "").replace(",", "").strip()) if pd.notna(x) and str(x).strip() != '' else ""),
-        "Employees": df.get("Location Number of Employees"),
+        revenue_col = df.get("Location Sales Volume") or df.get("Location Sales Volume Actual")
+        "Company Revenue": revenue_col.apply(lambda x: int(str(x).replace("$", "").replace(",", "").strip()) if pd.notna(x) and str(x).strip() != '' else ""),
+        "Employees": df.get("Location Number of Employees") or df.get("Location Number of Employees Actual"),
         "Industry": df.get("Primary NAICS Description"),
         "NAICS Code": df.get("Primary NAICS"),
         "SIC Code": df.get("Primary SIC"),
@@ -306,6 +307,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
