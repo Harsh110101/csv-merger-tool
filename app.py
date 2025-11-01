@@ -16,7 +16,7 @@ UNIFIED_COLUMNS = [
 
 # Upload CSV files
 uploaded_files = st.file_uploader("📂 Drop your CSV files here", type="csv", accept_multiple_files=True)
-
+revenue_col = df.get("Location Sales Volume") or df.get("Location Sales Volume Actual")
 
 # Define all your parser functions here
 def parse_zoominfo(df):
@@ -136,7 +136,6 @@ def parse_salesgenie(df):
         "City": df.get("City") or df.get("Location City"),
         "State": df.get("Province") or df.get("Location State"),
         "Country": "Canada",
-        revenue_col = df.get("Location Sales Volume") or df.get("Location Sales Volume Actual")
         "Company Revenue": revenue_col.apply(lambda x: int(str(x).replace("$", "").replace(",", "").strip()) if pd.notna(x) and str(x).strip() != '' else ""),
         "Employees": df.get("Location Number of Employees") or df.get("Location Number of Employees Actual"),
         "Industry": df.get("Primary NAICS Description"),
@@ -307,6 +306,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
