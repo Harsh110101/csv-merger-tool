@@ -31,7 +31,7 @@ def parse_zoominfo(df):
         "Work Phone": df.get("Direct Phone Number"),
         "Person LinkedIn URL": df.get("LinkedIn Contact Profile URL"),
         "Company Name": df.get("Company Name"),
-        "Website": df.get("Website").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
+        "Website": df.get("Website").fillna("").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
         "Founding Year": df.get("Founded Year"),
         "Facebook URL": df.get("Facebook URL") or df.get("Facebook Company Profile URL"),
         "LinkedIn URL": df.get("LinkedIn URL") or df.get("LinkedIn Company Profile URL"),
@@ -95,7 +95,7 @@ def parse_apollo(df):
         "Work Phone": df.get("Work Direct Phone"),
         "Person LinkedIn URL": df.get("Person Linkedin Url"),
         "Company Name": df.get("Company Name"),
-        "Website": df.get("Website").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
+        "Website": df.get("Website").fillna("").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
         "Founding Year": "",
         "Facebook URL": df.get("Facebook Url"),
         "LinkedIn URL": df.get("Company Linkedin Url"),
@@ -126,7 +126,7 @@ def parse_salesgenie(df):
         "Work Phone": df.get("Phone Number"),
         "Person LinkedIn URL": "",
         "Company Name": df.get("Company Name"),
-        "Website": df.get("Website") or df.get("Company Website").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
+        "Website": df.get("Website") or df.get("Company Website").fillna("").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
         "Founding Year": df["Primary SIC Year Appeared"] if "Primary SIC Year Appeared" in df.columns else df.get("Year Established"),
         "Facebook URL": "",
         "LinkedIn URL": "",
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
