@@ -131,7 +131,7 @@ def parse_salesgenie(df):
         "Facebook URL": "",
         "LinkedIn URL": "",
         "Twitter URL": "",
-        "Company Address": df.get("Address")
+        "Company Address": df.get("Address"),
         "City": df.get("City"),
         "State": df.get("Province"),
         "Country": "Canada",
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
