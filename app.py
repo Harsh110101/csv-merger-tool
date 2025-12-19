@@ -20,22 +20,22 @@ uploaded_files = st.file_uploader("📂 Drop your CSV files here", type="csv", a
 # Define all your parser functions here
 def parse_zoominfo(df):
     return pd.DataFrame({
-        "First Name": df.get("First Name") or "",
-        "Last Name": df.get("Last Name") or "",
+        "First Name": df.get("First Name") ,
+        "Last Name": df.get("Last Name"),
         "Full Name": ((df.get("First Name", pd.Series("", index=df.index)).fillna('') + " " + df.get("Last Name", pd.Series("", index=df.index)).fillna('')).str.strip()),
-        "Title": df.get("Job Title") or "",
-        "Seniority": df.get("Management Level") or "",
-        "Department": df.get("Department") or "",
-        "Email": df.get("Email Address") or "",
-        "Mobile Phone": df.get("Mobile phone") or "",
+        "Title": df.get("Job Title"),
+        "Seniority": df.get("Management Level"),
+        "Department": df.get("Department"),
+        "Email": df.get("Email Address"),
+        "Mobile Phone": df.get("Mobile phone"),
         "Work Phone": df.get("Direct Phone Number"),
         "Person LinkedIn URL": df.get("LinkedIn Contact Profile URL"),
         "Company Name": df.get("Company Name"),
         "Website": df.get("Website").fillna("").astype(str).str.strip().str.lower().str.replace(r"^https?://", "", regex=True).str.replace(r"^www\.", "", regex=True).str.replace(r"/$", "", regex=True),
         "Founding Year": df.get("Founded Year"),
-        "Facebook URL": df.get("Facebook URL") or df.get("Facebook Company Profile URL"),
-        "LinkedIn URL": df.get("LinkedIn URL") or df.get("LinkedIn Company Profile URL"),
-        "Twitter URL": df.get("Twitter URL") or df.get("Twitter Company Profile URL"),
+        "Facebook URL": df.get("Facebook URL"),
+        "LinkedIn URL": df.get("LinkedIn URL"),
+        "Twitter URL": df.get("Twitter URL"),
         "Company Address": df.get("Company Street Address"),
         "City": df.get("Company City"),
         "State": df.get("Company State"),
@@ -305,6 +305,7 @@ st.dataframe(all_data.head(50))
 
 csv = all_data.to_csv(index=False).encode("utf-8")
 st.download_button("📥 Download Merged CSV", csv, "merged_leads.csv", "text/csv")
+
 
 
 
